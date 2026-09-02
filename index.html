@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>飞阅存档 · OAuth 回调</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f4f6fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  main {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(30, 70, 160, 0.10);
+    padding: 48px 56px;
+    max-width: 520px;
+    margin: 24px;
+    text-align: center;
+  }
+  .icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 20px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #3b7bff, #165dff);
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 56px;
+    font-family: Georgia, serif;
+    letter-spacing: 1px;
+    user-select: none;
+  }
+  h1 { font-size: 20px; color: #1f2329; margin-bottom: 6px; }
+  .sub { font-size: 13px; color: #8f959e; margin-bottom: 24px; }
+  .msg {
+    font-size: 15px;
+    color: #4e5969;
+    line-height: 1.8;
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: #f7f8fa;
+    word-break: break-all;
+  }
+  .msg.ok { background: #e8f5e9; color: #1a6b2e; }
+  .msg.error { background: #fdecea; color: #a0261c; }
+</style>
+</head>
+<body>
+  <main>
+    <div class="icon">Fei</div>
+    <h1>飞阅存档 · 飞书登录回调</h1>
+    <p class="sub">FeiSave OAuth callback</p>
+    <p id="msg" class="msg">正在处理…</p>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var code = params.get('code');
+      var error = params.get('error');
+      var msg = document.getElementById('msg');
+
+      if (error) {
+        msg.textContent = '授权失败：' + error + '。请关闭本页返回扩展重试。';
+        msg.className = 'msg error';
+      } else if (code) {
+        msg.textContent = '授权成功！请关闭本页返回扩展。';
+        msg.className = 'msg ok';
+        // 扩展检测到回调后会自行关闭本标签页；这里做个兜底
+        try { window.close(); } catch (e) { /* 忽略 */ }
+      } else {
+        msg.textContent = '此页面是「飞阅存档」的飞书登录回调页。' +
+          '请从扩展的「设置 → 飞书账号 → 登录飞书」发起授权，授权完成后会自动跳回这里。';
+      }
+    })();
+  </script>
+</body>
+</html>
